@@ -278,6 +278,47 @@ app.get('/api/admin/stats', authenticateRole(['admin']), async (req: AuthRequest
   }
 });
 
+// GET /api/admin/dashboard - Admin gets dashboard data
+app.get('/api/admin/dashboard', authenticateRole(['admin']), async (req: AuthRequest, res: express.Response) => {
+  try {
+    // Fetch users
+    const users = await User.find().select('-password');
+
+    // Mock chatbot analytics
+    const chatbotAnalytics = {
+      totalConversations: 1247,
+      avgSessionLength: '12 minutes',
+      successfulEscalations: 89,
+      userSatisfaction: '4.3/5',
+      topTopics: ['Anxiety', 'Depression', 'Stress']
+    };
+
+    // Mock appointment trends
+    const appointmentTrends = {
+      thisMonth: 342,
+      growth: '+14.8%',
+      completionRate: '94%',
+      avgRating: 4.7
+    };
+
+    // Mock motivational content
+    const motivationalContent = [
+      { id: 1, text: 'You are stronger than you think.' },
+      { id: 2, text: 'Every day is a new beginning.' },
+      { id: 3, text: 'Progress, not perfection.' }
+    ];
+
+    res.json({
+      users,
+      chatbotAnalytics,
+      appointmentTrends,
+      motivationalContent
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch dashboard data' });
+  }
+});
+
 // Therapist routes
 app.use('/api/therapists', therapistRoutes);
 
